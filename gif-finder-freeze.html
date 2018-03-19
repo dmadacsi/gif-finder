@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Julius+Sans+One" rel="stylesheet">
+    <title>Gif-a-nality</title>
+</head>
+
+<body>
+    <!-- <div id="buttons">
+ </div> -->
+    <h1>Nationality Giffer!</h1> 
+
+    <div id="topics"></div>
+    <form id="change-topics"><label for="topic-input"> Add a nationality! </label><input type="text" id="topics-input">
+        
+    <input id="add-topic" type="submit" value="go ahead!">
+    </form>
+
+    <div id="nationalities"></div>
+
+    <div id="gifs-appear-here" class="gif"></div> <!--added img class gif here-->
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        var topics = ["German", "Swedish", "Italian", "British", "American", "Dutch", "Hungarian", "Austrian", "French", "Australian", "Mexican", "Canadian", "South African"]
+
+        function renderButton(){
+            for (j = 0; j < topics.length; j++) {
+                var buttons = $('<button>' + topics[j] + '</button>')
+                buttons.appendTo('#topics');
+
+            }
+        }   
+                renderButton()
+
+
+
+        $("#topics").on("click", 'button', function (event) {   //"button" filters down to the individual buttons in the div
+            console.log(event);
+            var person = $(this).text();  //gives me the text from the button
+            // $("#nationalities").text(person);
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+                person + "&api_key=dc6zaTOxFJmzC&limit=10";
+            console.log(topics);
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            })
+                .then(function (response) {
+                    var results = response.data;
+                    console.log(response);
+
+                    for (var i = 0; i < results.length; i++) {
+
+                        var gifDiv = $("<div class='item'>");
+
+
+                        var rating = results[i].rating;
+
+                        var p = $("<p>").text("Rating: " + rating);
+
+                        var personImage = $("<img>");
+                        personImage.attr("src", results[i].images.fixed_height_still.url);
+
+                        gifDiv.prepend(p);
+                        gifDiv.prepend(personImage);
+
+                        $("#gifs-appear-here").prepend(gifDiv);
+
+                        if (i === results.length - 1) {
+                            var language = `<h3> ${person} </h3>`;
+                            $("#gifs-appear-here").prepend(language);
+                        }
+
+                    }
+                });
+            });
+        
+        var imPlay = $("<img>");
+            imPlay.addClass("gif");
+
+        $(".gif").on("click", function() {
+            imPlay.attr("src", results[i].images.fixed_height.url)
+            alert("clicked");
+        
+        });   
+        
+//         jQuery("<img>").after( function() {
+
+// // keep ref to the image
+//   var image = this;
+
+//   // add div container for the link
+//   var $d = jQuery("<div />");
+
+//   // add link
+//   var $a = jQuery("<a>Start / Stop animation</a>");
+//   $d.append($a);
+
+//   // add click event
+//   $a.on("click", function() { 
+
+//       // get the src of the image
+//       var src = jQuery(image).attr("src");
+
+//       // change the image
+//       if(jQuery(src.split("_")).last()[0] == "still.gif")
+//           jQuery(image).attr('src', src.replace('_still.gif', '.gif'));
+//       else
+//           jQuery(image).attr('src', src.replace('.gif', '_still.gif'));
+      
+//   })
+//   return $d;
+//  console.log(image);
+// });
+
+
+        
+        $("#add-topic").on("click", function (event) {
+                console.log("test")
+                $("#topics").empty();
+                event.preventDefault();
+                var newNationality = $("#topics-input").val();
+                topics.push(newNationality);
+                console.log(topics)
+                renderButton()
+            });
+
+
+
+    </script>
+</body>
+<style>
+    #gifs-appear-here {
+        display: flex;
+        flex-wrap: wrap;
+        background-color: DodgerBlue;
+        margin: 10px;
+    }
+
+    #gifs-appear-here>div {
+        background-color: #f1f1f1;
+        width: auto;
+        margin: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: 'Julius Sans One', sans-serif;
+
+    }
+
+    h3 {
+        background-color: rgb(187, 24, 21);
+        color: ivory;
+        font-size: 25px;
+        font-family: 'Julius Sans One', sans-serif;
+    }
+
+    button {
+        width: auto;
+        height: 40px;
+        -webkit-transition-duration: 0.4s;
+        /* Safari */
+        transition-duration: 0.4s;
+        margin: 5px;
+    }
+
+    button:hover {
+        background-color: rgb(187, 24, 21);
+        /* Green */
+        color: white;
+    }
+
+    body{
+        background-image:url("https://cdn.planetared.com/wp-content/uploads/2017/02/Aprender-idiomas.jpg");
+        font-family: 'Julius Sans One', sans-serif;
+    }
+    h1{
+        text-align: center;
+        font-family: 'Julius Sans One', sans-serif;
+        font-size: 50px;
+        color: ivory;
+        font-weight: 900; 
+        background-color: midnightblue; 
+    }
+
+    #topics{
+        background-color: midnightblue;
+    }
+
+    #change-topics{
+        background-color: rgb(187, 24, 21);
+        color: snow;
+        padding-bottom:5px;
+        text-align: center;
+    }
+    
+    .gif:hover{
+        background-color: red
+    }
+    
+</style>
+
+</html>
